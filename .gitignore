@@ -24,3 +24,7 @@
 ./client/*.sln
 ./client/*.sw?
 
+./server/.env
+
+**/.env
+
