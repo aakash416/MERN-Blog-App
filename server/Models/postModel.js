@@ -20,6 +20,7 @@ const postSchema = new Schema(
     description: { type: String, required: true },
     creator: { type: Schema.Types.ObjectId, ref: "User" },
     category: { type: String, enum: [] },
+    thumbnail: { type: String, required: true },
   },
   { timestamps: true }
 );
