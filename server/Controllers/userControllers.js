@@ -4,6 +4,11 @@ import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 import fs from "fs";
 import path from "path";
+import { v4 as uuidv4 } from "uuid";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Register a new user
 // POST : api/users/register
@@ -129,6 +134,33 @@ const changeAvatar = async (req, res, next) => {
         new HttpError("Profile too big. Should be less than 500kb", 422)
       );
     }
+
+    let fileName;
+    fileName = avatar.name;
+    let splittedFilename = fileName.split(".");
+    let newFilename =
+      splittedFilename[0] +
+      uuidv4() +
+      "." +
+      splittedFilename[splittedFilename.length - 1];
+    avatar.mv(
+      path.join(__dirname, "..", "uploads", newFilename),
+      async (err) => {
+        if (err) {
+          return next(new HttpError(err));
+        }
+        const updatedAvatar = await User.findByIdAndUpdate(
+          req.user.id,
+          { avatar: newFilename },
+          { new: true }
+        );
+
+        if (!updatedAvatar) {
+          return next(new HttpError("Avatar couldn't be changed", 422));
+        }
+        res.status(200).json(updatedAvatar);
+      }
+    );
   } catch (error) {
     return next(new HttpError("unable to upload file"));
   }
