@@ -17,7 +17,7 @@ const __dirname = path.dirname(__filename);
 
 app.use(express.json({ extended: true }));
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({ credentials: true, origin: process.env.POST_3K }));
+app.use(cors({ credentials: true, origin: process.env.CLIENT_ORIGIN }));
 
 // Initialize express-fileupload middleware
 app.use(upload());
